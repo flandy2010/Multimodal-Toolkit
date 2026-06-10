@@ -223,3 +223,6 @@ __marimo__/
 
 # data
 .mp4
+
+# ckpt
+object_detection/yolov9/ckpt/
