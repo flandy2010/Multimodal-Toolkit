@@ -1,0 +1,10 @@
+{
+    "sharegpt4v_instruct_gpt4-vision_cap100k": {
+      "root": "FineVD",
+      "video_name_txt": "video_name.txt",
+      "question_txt": "question.txt",
+      "data_augment": false,
+      "repeat_time": 1,
+      "length": 115
+    }
+}

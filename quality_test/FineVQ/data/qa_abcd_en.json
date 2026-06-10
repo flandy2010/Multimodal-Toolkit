@@ -1,0 +1,10 @@
+{
+    "sharegpt4v_instruct_gpt4-vision_cap100k": {
+      "root": "FineVD",
+      "annotation_train": "data/abcd_train_en.jsonl",
+      "annotation_test": "data/abcd_test_en.jsonl",
+      "data_augment": false,
+      "repeat_time": 1,
+      "length": 115
+    }
+}
