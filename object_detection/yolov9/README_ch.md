@@ -44,7 +44,19 @@ pip install -r requirements.txt
 
 # 使用介绍
 
-## 样例数据测试
+## Object Detection
+
+### 样例运行
+
+使用前需要下载对应模型参数
+```text
+├── ./README.md
+├── ./ckpt
+│    ├── ./ckpt/gelan-c-det.pt
+│    └── ./ckpt/yolov9-c-converted.pt
+├── ./scripts
+```
+
 ```shell
 # GPU版本
 python detect.py --source './data/images/horses.jpg' --img 640 --device 0 --weights './yolov9-c-converted.pt' --name yolov9_c_c_640_detect
@@ -52,6 +64,7 @@ python detect.py --source './data/images/horses.jpg' --img 640 --device 0 --weig
 # CPU版本
 python detect.py --source './data/images/horses.jpg' --img 640 --device cpu --weights './yolov9-c-converted.pt' --name yolov9_c_c_640_detect
 ```
+
 模型会输出运行耗时以及输出路径，并输出小马的物体识别结果
 ```text
 gelan-c summary: 387 layers, 25288768 parameters, 64944 gradients, 102.1 GFLOPs
@@ -61,6 +74,49 @@ Results saved to runs/detect/yolov9_c_c_640_detect
 ```
 ![object_detect_ret](runs/detect/yolov9_c_c_640_detect/horses.jpg)
 
-## 真实数据调用
+### 功能拆解
+在/scripts/run_object_detection.py里面实现了对于单图片物体检测的代码拆解，运行代码如下：
+```shell
+python -m scripts.run_object_detection
+```
+核心过程为：
+1. 建立数据流和模型
+```python
+dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
+# model.name中存放了index -> label的映射表，例如：{0: 'person', 1: 'bicycle'}
+```
+2. 执行模型推理
+
+模型输出结果pred的格式为：[2, batch, 84, 5880]
+- pred[0] (Lead Head)：主检测头。这是模型最准的输出，最终的检测结果、NMS 后的框都是从这里产生的。
+- pred[1] (Auxiliary Head)：辅助检测头。在训练阶段，它负责辅助主头学习特征；在推理阶段，某些模型版本会同时输出它，但在实际使用（NMS）时通常只取 pred[0]。
+- 84: 内容组。包含 4 个坐标分量 + 80 个类别的得分。
+- 5880: 预测框的总数。这是不同尺度的特征图叠加后的结果。
+```python
+pred = model(im, augment=augment, visualize=visualize)
+```
+3. 执行后处理（非极大值抑制）
+
+运行后的结果 pred： 形状会变为 list，其中每个元素是形状为 [N, 6] 的 Tensor，每一行代表一个物体：[x1, y1, x2, y2, confidence, class_id]。
+其工作流程可以概括为：
+    
+- 先过滤：根据pred中给出的置信度，扔掉分太低的候选框（conf_thres）。 
+- 再转换：把坐标转为像素格式，确定每个框最像哪个类。
+- 后去重：利用 贪心算法，在重叠严重（iou_thres）的框中选出最强的那个，剩下的全部踢出。
+- 控总量：最后只取前 max_det 个最靠谱的结果返回。
+
+其入参含义如下：
+
+- conf_thres(置信度阈值)：初筛阶段分值低于此阈值的框直接被扔掉。数值越高，结果越“干净”，但也容易漏掉不明显的物体。
+- iou_thres(IoU阈值)：去重阶段判断两个框重叠程度的上限（交并比）。如果两个框 IoU 超过这个值，则只保留得分高的。数值越小，去重越狠。
+- classes(类别过滤器)：如果你只关心某些类（比如只要“人”），传入类别 ID 列表（如 [0]），它会自动过滤掉其他所有类。
+- agnostic_nms(类无关NMS)：
+  - False (默认): 不同类别的框即使重叠也不会互相抑制（如人和车重叠）。
+  - True: 全局竞争，重叠严重的框只留得分最高的，不管它们是什么类。
+- max_det(最大检测数)：每张图片最终保留的物体上限（如 300 个）。防止因模型误报产生数千个框导致后续绘制或跟踪程序崩溃。
+```python
+pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+```
 
 # 踩坑记录
