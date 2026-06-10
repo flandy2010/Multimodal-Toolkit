@@ -83,7 +83,7 @@ python -m script.run_fake
 ![可视化样例](img/visualization_demo.png)
 
 # 踩坑记录
-- 视频读入方式上，ffmpeg相比opencv有4倍的速度提升，优先使用代码库中的经典代码:
+1. 视频读入方式上，ffmpeg相比opencv有4倍的速度提升，优先使用代码库中的经典代码:
 ```python
 import ffmpeg
 import numpy as np
@@ -97,4 +97,11 @@ def get_frames(fn, width=48, height=27):
     )
     video = np.frombuffer(video_stream, np.uint8).reshape([-1, height, width, 3])
     return video
+```
+
+2. 在TransNetV2的模型结构中，有一个帧之间的相似度矩阵，他的中间结果占用和窗口长度成平方关系。
+在实际使用的时候需要对待处理视频进行滑窗来避免OOM。同时在滑窗之间可以增加一些overlap来保证模型效果。
+
+```python
+similarities = torch.bmm(x, x.transpose(1, 2))  # [batch_size, time_window, time_window]
 ```
