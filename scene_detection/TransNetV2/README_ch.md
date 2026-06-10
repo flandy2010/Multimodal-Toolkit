@@ -82,6 +82,13 @@ python -m script.run_fake
 ```
 ![可视化样例](img/visualization_demo.png)
 
+## 真实数据调用
+运行下述代码可以使用真实RAID数据集中的视频进行场景切分
+```shell
+cd scene_detection/TransNetV2
+python -m script.run
+```
+
 # 踩坑记录
 1. 视频读入方式上，ffmpeg相比opencv有4倍的速度提升，优先使用代码库中的经典代码:
 ```python
