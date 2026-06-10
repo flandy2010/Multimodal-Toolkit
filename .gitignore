@@ -226,3 +226,4 @@ __marimo__/
 
 # ckpt
 object_detection/yolov9/ckpt/
+quality_test/FineVQ/ckpt/

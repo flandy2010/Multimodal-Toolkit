@@ -48,7 +48,7 @@ pip install -r requirements.txt
 
 ### 样例运行
 
-使用前需要下载对应模型参数
+使用前需要下载对应模型参数，可以从github中点击对应模型名触发下载链接。
 ```text
 ├── ./README.md
 ├── ./ckpt
