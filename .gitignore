@@ -219,10 +219,11 @@ __marimo__/
 
 # Mac
 .idea/
+.obsidian/
 .DS_Store
 
 # data
-.mp4
+*.mp4
 
 # ckpt
 object_detection/yolov9/ckpt/
