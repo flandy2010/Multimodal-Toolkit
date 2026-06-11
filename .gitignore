@@ -220,6 +220,7 @@ __marimo__/
 # Mac
 .idea/
 .obsidian/
+.workbuddy/
 .DS_Store
 
 # data
