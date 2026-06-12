@@ -9,11 +9,11 @@ from loss import lossAV, lossV
 from model.Model import ASD_Model
 
 class ASD(nn.Module):
-    def __init__(self, lr = 0.001, lrDecay = 0.95, **kwargs):
+    def __init__(self, lr = 0.001, lrDecay = 0.95, device='cpu', **kwargs):
         super(ASD, self).__init__()        
-        self.model = ASD_Model().cuda()
-        self.lossAV = lossAV().cuda()
-        self.lossV = lossV().cuda()
+        self.model = ASD_Model()
+        self.lossAV = lossAV()
+        self.lossV = lossV()
         self.optim = torch.optim.Adam(self.parameters(), lr = lr)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optim, step_size = 1, gamma=lrDecay)
         print(time.strftime("%m-%d %H:%M:%S") + " Model para number = %.2f"%(sum(param.numel() for param in self.model.parameters()) / 1000 / 1000))
@@ -84,9 +84,9 @@ class ASD(nn.Module):
     def saveParameters(self, path):
         torch.save(self.state_dict(), path)
 
-    def loadParameters(self, path):
+    def loadParameters(self, path, map_location='cpu'):
         selfState = self.state_dict()
-        loadedState = torch.load(path)
+        loadedState = torch.load(path, map_location=map_location)
         for name, param in loadedState.items():
             origName = name;
             if name not in selfState:
