@@ -143,7 +143,8 @@ class InternVLChatModel(PreTrainedModel):
         config.vision_config.use_flash_attn = True if use_flash_attn else False
         config.llm_config.attn_implementation = 'flash_attention_2' if use_flash_attn else 'eager'
         self.llm_arch_name = config.llm_config.architectures[0]
-        print('this model')
+
+        print("[INFO] using InternVLChatModel")
         logger.info(f'num_image_token: {self.num_image_token}')
         logger.info(f'ps_version: {self.ps_version}')
         if vision_model is not None:
@@ -260,8 +261,12 @@ class InternVLChatModel(PreTrainedModel):
         # # Prepare inputs for slow_fast model
         inputs = pack_pathway_output(frames, device)  # Returns [slow_pathway, fast_pathway]
         # print('inputs',inputs.shape)
-        motion_feature = self.slowfast_model(inputs)
-        motion_feature = motion_feature.view(B, -1)
+
+        # 由于mac环境下的mps/cpu不太支持avg_pool3d_out_frame的BFloat16，暂时注释掉
+        # motion_feature = self.slowfast_model(inputs)
+        # motion_feature = motion_feature.view(B, -1)
+
+        motion_feature = torch.zeros((B, 2304)).to(input_embeds)
         motion_embeds = self.motion_mlp(motion_feature)
      
         # if torch.distributed.get_rank() == 0:

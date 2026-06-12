@@ -200,7 +200,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_path", type=str, default="../../data/images/horses.jpg", help="输入图像的路径")
-    parser.add_argument("--model_path", type=str, default="./ckpt/", help="模型权重(checkpoint)的路径")
+    parser.add_argument("--model_path", type=str, default="./ckpt/FineVQ_score", help="模型权重(checkpoint)的路径")
     parser.add_argument("--device", type=str, default="cpu", help="使用的设备")
     args = parser.parse_args()
 
@@ -211,10 +211,6 @@ def main():
     print(f"Predicting quality for: {args.image_path}")
     score = predict_quality(model, tokenizer, args.image_path, device=device)
     print(f"Quality Score: {score:.4f}")
-
-if __name__ == "__main__":
-    main()
-
 
 
 if __name__ == "__main__":
