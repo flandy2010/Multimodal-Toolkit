@@ -10,10 +10,10 @@ from model.talkNetModel import talkNetModel
 class talkNet(nn.Module):
     def __init__(self, lr = 0.0001, lrDecay = 0.95, **kwargs):
         super(talkNet, self).__init__()        
-        self.model = talkNetModel().cuda()
-        self.lossAV = lossAV().cuda()
-        self.lossA = lossA().cuda()
-        self.lossV = lossV().cuda()
+        self.model = talkNetModel()
+        self.lossAV = lossAV()
+        self.lossA = lossA()
+        self.lossV = lossV()
         self.optim = torch.optim.Adam(self.parameters(), lr = lr)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optim, step_size = 1, gamma=lrDecay)
         print(time.strftime("%m-%d %H:%M:%S") + " Model para number = %.2f"%(sum(param.numel() for param in self.model.parameters()) / 1024 / 1024))
@@ -78,9 +78,9 @@ class talkNet(nn.Module):
     def saveParameters(self, path):
         torch.save(self.state_dict(), path)
 
-    def loadParameters(self, path):
+    def loadParameters(self, path, map_location='cpu'):
         selfState = self.state_dict()
-        loadedState = torch.load(path)
+        loadedState = torch.load(path, map_location=map_location)
         for name, param in loadedState.items():
             origName = name;
             if name not in selfState:
