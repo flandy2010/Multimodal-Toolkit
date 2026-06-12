@@ -23,4 +23,5 @@ TODO
 
 [2026-06-09] 场景切割工具TransNetV2，自带模型参数。原始仓库地址: [github](https://github.com/soCzech/TransNetV2/)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/scene_detection/TransNetV2/README_ch.md) \
 [2026-06-10] 物体检测工具Yolov9，自带模型参数。原始仓库地址: [github](https://github.com/WongKinYiu/yolov9)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/object_detection/yolov9/README_ch.md) \
-[working] 质量检测工具FineVQ，HF公开模型参数。原始仓库地址: [github](https://github.com/IntMeGroup/FineVQ)，本仓库使用实录: TODO \
+[2026-06-12] 质量检测工具FineVQ，HF公开模型参数。原始仓库地址: [github](https://github.com/IntMeGroup/FineVQ)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/quality_test/FineVQ/README_ch.md)
+[TODO] 说话人检测工具Light-ASD，自带模型参数。原始仓库地址：[github](https://github.com/Junhua-Liao/Light-ASD)

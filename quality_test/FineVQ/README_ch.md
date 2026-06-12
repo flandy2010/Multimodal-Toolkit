@@ -53,10 +53,12 @@ python scripts/download_ckpt.py
 
 ## 使用方法
 ```shell
-python scripts/run.py --model_path ./ckpt/InternVL2-8B --image_path ../../data/images/horses.jpg
+python scripts/run.py --model_path ./ckpt/FineVQ_score --image_path ../../data/images/horses.jpg
+# 在mac环境指定使用mps
+# python scripts/run.py --model_path ./ckpt/FineVQ_score --image_path ../../data/images/horses.jpg --device mps
 ```
 Demo采用的实际输入内容为模型参数地址和图片地址，模型工作流如下：
-- 处理数据，
+- 处理数据，把文本和图片数据分门别类处理好。
 - 拼接成了固定的conversation模板
 ```python
 # 拼接一下prompt用于评价图片（视频）质量
@@ -120,6 +122,17 @@ class InternVLChatModel(PreTrainedModel):
         return {'score1':score1,
                 'label': shift_labels,
                 'logit': torch.argmax(shift_logits,dim=1)}
+```
+
+# 踩坑记录
+由于没有linux环境，而mac环境下的mps/cpu不太支持avg_pool3d_out_frame的BFloat16，只能临时伪造一个motion_feature的结果了。
+修改了`internvl/model/internvl_chat_infer/InternVLChatModel.py`内的相关代码。
+```python
+# 由于mac环境下的mps/cpu不太支持avg_pool3d_out_frame的BFloat16，暂时注释掉
+# motion_feature = self.slowfast_model(inputs)
+# motion_feature = motion_feature.view(B, -1)
+
+motion_feature = torch.zeros((B, 2304)).to(input_embeds)
 ```
 
 # 扩展阅读
