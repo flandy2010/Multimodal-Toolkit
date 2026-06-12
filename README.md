@@ -26,5 +26,5 @@ TODO
 [2026-06-12] 质量检测工具FineVQ，HF公开模型参数。原始仓库地址: [github](https://github.com/IntMeGroup/FineVQ)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/quality_test/FineVQ/README_ch.md) \
 
 ### 说话人检测
-[TODO] 说话人检测工具Light-ASD，HF存在公开模型参数。原始仓库地址：[github](https://github.com/Junhua-Liao/Light-ASD)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/speaker_detection/Light-ASD/README_ch.md) \
-[TODO] 说话人检测工具TalkNet-ASD，HF存在公开模型参数。原始仓库地址：[github](https://github.com/TaoRuijie/TalkNet-ASD/)
+[2026-06-12] 说话人检测工具Light-ASD，HF存在公开模型参数。原始仓库地址：[github](https://github.com/Junhua-Liao/Light-ASD)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/speaker_detection/Light-ASD/README_ch.md) \
+[2026-06-12] 说话人检测工具TalkNet-ASD，HF存在公开模型参数。原始仓库地址：[github](https://github.com/TaoRuijie/TalkNet-ASD/)，本仓库使用实录: [script](https://github.com/flandy2010/Multimodal-Toolkit/blob/main/speaker_detection/TalkNet-ASD/README_ch.md)
