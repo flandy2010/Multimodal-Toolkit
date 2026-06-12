@@ -230,3 +230,6 @@ __marimo__/
 object_detection/yolov9/ckpt/
 quality_test/FineVQ/ckpt/
 speaker_detection/Light-ASD/model/faceDetector/s3fd/sfd_face.pth
+
+# result
+speaker_detection/Light-ASD/runs/
