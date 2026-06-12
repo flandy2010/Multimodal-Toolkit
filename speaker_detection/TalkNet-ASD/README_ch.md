@@ -18,6 +18,8 @@ pip install -r requirement.txt
 ```shell
 python scripts/run.py --video_path ../../data/RAIDataset/videos/1.mp4 --device mps
 ```
+最终可视化结果为带有人脸检测框的视频，绿色表示人在说话，红色表示不在说话，可以同时识别多个人：
+![image](./visualize_demo.png)
 
 # 踩坑记录
 
