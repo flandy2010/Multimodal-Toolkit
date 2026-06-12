@@ -247,7 +247,7 @@ def visualization(tracks, scores, args, output_path=None):
     fw = firstImage.shape[1]
     fh = firstImage.shape[0]
     video_only_path = os.path.join(args.pyaviPath, 'video_only.avi')
-    vOut = cv2.VideoWriter(video_only_path, cv2.VideoWriter_fourcc(*'XVID'), 25, (fw, fh))
+    vOut = cv2.VideoWriter(video_only_path, cv2.VideoWriter_fourcc(*'mp4v'), 25, (fw, fh))
     for fidx, fname in enumerate(flist):
         image = cv2.imread(fname)
         for face in faces[fidx]:
@@ -264,9 +264,10 @@ def visualization(tracks, scores, args, output_path=None):
     vOut.release()
 
     if output_path is None:
-        output_path = os.path.join(args.pyaviPath, 'video_out.avi')
-    command = ("ffmpeg -y -i %s -i %s -threads %d -c:v copy -c:a copy %s -loglevel panic" %
+        output_path = os.path.join(args.pyaviPath, 'video_out.mp4')
+    command = ("ffmpeg -y -i %s -i %s -threads %d -c:v libx264 -pix_fmt yuv420p -c:a aac %s -loglevel panic" %
                (video_only_path, args.audioFilePath, args.nDataLoaderThread, output_path))
+
     subprocess.call(command, shell=True, stdout=None)
     return output_path
 
@@ -276,10 +277,10 @@ def main():
     parser.add_argument('--video_path', type=str, required=True, help='Path to input video')
     parser.add_argument('--pretrain_model', type=str, default='weight/pretrain_AVA_CVPR.model',
                         help='Path to pretrained ASD model')
+    parser.add_argument('--save_dir', type=str, default="./runs",
+                        help='Directory for intermediate results (default: same dir as video)')
     parser.add_argument('--output_path', type=str, default=None,
                         help='Output video path (default: <save_dir>/pyavi/video_out.avi)')
-    parser.add_argument('--save_dir', type=str, default=None,
-                        help='Directory for intermediate results (default: same dir as video)')
     parser.add_argument('--facedet_scale', type=float, default=0.25,
                         help='Scale factor for face detection')
     parser.add_argument('--crop_scale', type=float, default=0.40,
@@ -378,7 +379,7 @@ def main():
 
     # Visualization
     output = visualization(vidTracks, scores, args, output_path=pargs.output_path)
-    print(f"\n[Done] Output video saved to: {output}")
+    print(f"\n[Done] Output video saved to: {os.path.abspath(output)}")
 
     # Print summary
     print(f"\n{'='*50}")

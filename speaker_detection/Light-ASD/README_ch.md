@@ -31,6 +31,8 @@ python scripts/run.py --video_path ../../data/RAIDataset/videos/1.mp4
 python scripts/run.py --video_path ../../data/RAIDataset/videos/1.mp4 --device cude
 python scripts/run.py --video_path ../../data/RAIDataset/videos/1.mp4 --device mps
 ```
+最终可视化结果为带有人脸检测框的视频，绿色表示人在说话，红色表示不在说话：
+![image](./visualize_demo.png)
 
 ## 模型参数下载
 sfd_face.pth权重在github上的网盘链接已经失效，可以前往仓库下载：
@@ -60,3 +62,15 @@ PyTorch在MP（Apple Silicon GPU）上还不支持max_pool3d这个操作。
 import os
 os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 ```
+
+# 扩展阅读
+
+## 预处理流程
+
+代码执行逻辑按照以下6步执行：
+- 多媒体提取：使用ffmpeg 将视频统一转为 25fps，提取音频并把视频拆解成一帧帧的图片。
+- 场景切换检测：使用scenedetect找出视频中的镜头切换点，确保人脸追踪不会跨越不同的镜头。
+- 人脸检测：使用S3FD模型在每一帧中寻找人脸位置。
+- 人脸追踪：在每个镜头内，将不同帧的人脸连接成“轨迹”（Track），并对缺失帧进行插值。
+- ASD模型推理：将人脸画面和对应的音频输入深度学习模型，计算每一帧“正在说话”的概率分数。
+- 可视化：将计算结果绘回原视频，生成带标注的成品。
